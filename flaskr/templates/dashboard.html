@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Empresa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Barra superior -->
+    <div class="top-bar">Nombre de la Empresa</div>
+
+    <div class="main-container">
+        <!-- Barra lateral -->
+        <div class="side-bar">
+            <div class="menu-item" data-section="inicio">Inicio</div>
+
+            <!-- Submenú Clientes (Admin) -->
+            <div class="menu-item" data-section="clientes-main">Clientes</div>
+            <div class="sub-menu" id="clientes-sub" style="display:none; padding-left:20px;">
+                <div class="menu-item" data-section="clientes-agregar">Agregar</div>
+                <div class="menu-item" data-section="clientes-lista">Lista</div>
+            </div>
+
+            <!-- Submenú Facturas -->
+            <div class="menu-item" data-section="facturas-main">Facturas</div>
+            <div class="sub-menu" id="facturas-sub" style="display:none; padding-left:20px;">
+                <div class="menu-item" data-section="facturas-agregar">Agregar</div>
+                <div class="menu-item" data-section="facturas-lista">Lista</div>
+                <div class="menu-item" data-section="facturas-historial">Historial</div>
+                <div class="menu-item" data-section="facturas-eliminar">Eliminar</div>
+            </div>
+
+            <div class="menu-item" data-section="cobros">Cobros</div>
+            <div class="menu-item" data-section="cedulas">Cédulas</div>
+
+            <!-- Nueva opción -->
+            <div class="menu-item" data-section="perfil">Mi Cuenta</div>
+
+            <div class="menu-item" data-section="cerrar">Cerrar sesión</div>
+        </div>
+
+        <!-- Contenido dinámico -->
+        <div class="content-area" id="content-area">
+            <h2>Bienvenido al Dashboard</h2>
+            <p>Selecciona una opción en la barra lateral.</p>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role') || "usuario";
+
+        const menuItems = document.querySelectorAll('.menu-item');
+        const contentArea = document.getElementById('content-area');
+
+        // Mostrar solo opciones según rol
+        menuItems.forEach(item => {
+            const sec = item.dataset.section;
+            if(role === "usuario") {
+                // Usuario solo ve inicio, facturas, perfil y cerrar sesión
+                if(!["inicio","facturas-main","facturas-agregar","facturas-historial","facturas-eliminar","perfil","cerrar"].includes(sec)){
+                    item.style.display = "none";
+                }
+            }
+        });
+
+        // Submenús
+        const clientesMain = document.querySelector('[data-section="clientes-main"]');
+        const clientesSub = document.getElementById('clientes-sub');
+        const facturasMain = document.querySelector('[data-section="facturas-main"]');
+        const facturasSub = document.getElementById('facturas-sub');
+
+        if(clientesMain) {
+            clientesMain.addEventListener('click', () => {
+                clientesSub.style.display = clientesSub.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        if(facturasMain) {
+            facturasMain.addEventListener('click', () => {
+                facturasSub.style.display = facturasSub.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        // Contenido dinámico
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                const sec = item.dataset.section;
+                switch(sec) {
+                    case "inicio":
+                        contentArea.innerHTML = `<h2>${role === "admin" ? "Dashboard del Administrador" : "Panel del Usuario"}</h2>
+                                                 <p>Bienvenido, ${role}.</p>`;
+                        break;
+
+                    /* CLIENTES (Solo Admin) */
+                    case "clientes-agregar":
+                        contentArea.innerHTML = `<h2>Agregar Cliente</h2>
+                                                 <form>
+                                                    <input type="text" placeholder="Nombre del Cliente">
+                                                    <input type="text" placeholder="Correo">
+                                                    <button type="button">Agregar</button>
+                                                 </form>`;
+                        break;
+                    case "clientes-lista":
+                        contentArea.innerHTML = `<h2>Lista de Clientes</h2>
+                                                 <p>Tabla o lista simulada de clientes.</p>`;
+                        break;
+
+                    /* FACTURAS */
+                    case "facturas-agregar":
+                        contentArea.innerHTML = `<h2>Crear Factura</h2>
+                                                 <form>
+                                                    <input type="text" placeholder="Cliente">
+                                                    <input type="text" placeholder="Producto">
+                                                    <input type="number" placeholder="Cantidad">
+                                                    <input type="number" placeholder="Precio unitario">
+                                                    <input type="text" placeholder="Total" readonly>
+                                                    <button type="button">Completar</button>
+                                                    <button type="button">PDF</button>
+                                                 </form>`;
+                        break;
+                    case "facturas-lista":
+                        contentArea.innerHTML = `<h2>Lista de Facturas</h2>
+                                                 <p>Tabla simulada de facturas.</p>`;
+                        break;
+                    case "facturas-historial":
+                        contentArea.innerHTML = `<h2>Historial de Facturas</h2>
+                                                 <p>Listado de facturas anteriores (solo vista).</p>`;
+                        break;
+                    case "facturas-eliminar":
+                        contentArea.innerHTML = `<h2>Eliminar Factura</h2>
+                                                 <p>Funcionalidad simulada de eliminación.</p>`;
+                        break;
+
+                    /* COBROS Y CÉDULAS */
+                    case "cobros":
+                        contentArea.innerHTML = `<h2>Cobros</h2>
+                                                 <p>Gestión de cobros (solo admin).</p>`;
+                        break;
+                    case "cedulas":
+                        contentArea.innerHTML = `<h2>Cédulas</h2>
+                                                 <p>Gestión de cédulas (solo admin).</p>`;
+                        break;
+
+                    /* PERFIL / CUENTA */
+                    case "perfil":
+                        contentArea.innerHTML = `<h2>Mi Cuenta</h2>
+                                                 <div class="profile-section">
+                                                     <p><strong>Nombre:</strong> ${role === "admin" ? "Administrador 1" : "Usuario 2"}</p>
+                                                     <p><strong>Correo:</strong> ${role === "admin" ? "admin@empresa.com" : "usuario@empresa.com"}</p>
+                                                     <p><strong>Rol:</strong> ${role}</p>
+                                                     <h3>Cambiar Contraseña</h3>
+                                                     <form>
+                                                         <input type="password" placeholder="Contraseña actual">
+                                                         <input type="password" placeholder="Nueva contraseña">
+                                                         <input type="password" placeholder="Confirmar nueva contraseña">
+                                                         <button type="button">Actualizar</button>
+                                                     </form>
+                                                 </div>`;
+                        break;
+
+                    /* CERRAR SESIÓN */
+                    case "cerrar":
+                        window.location.href = "{{ url_for('login') }}";
+                        break;
+                }
+            });
+        });
+
+        // Cargar sección por defecto
+        document.querySelector('.menu-item[data-section="inicio"]').click();
+    </script>
+</body>
+</html>

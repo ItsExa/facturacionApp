@@ -1,0 +1,169 @@
+/* BODY GENERAL */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f0f4f8;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* NOMBRE DE LA EMPRESA ARRIBA */
+.company-name {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1a3e5c; 
+}
+
+/* FORMULARIOS DE LOGIN/REGISTER */
+.form-container {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    width: 350px;
+    text-align: center;
+    margin: 100px auto;
+}
+
+input {
+    width: calc(100% - 24px); 
+    padding: 12px;
+    margin: 10px auto; 
+    display: block; 
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box; 
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #ff7f50; 
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #ff5722;
+}
+
+a {
+    color: #1a3e5c;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* BARRA SUPERIOR */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #1a3e5c; /* azul logístico */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    z-index: 1000;
+}
+
+/* CONTENEDOR PRINCIPAL DEL DASHBOARD */
+.main-container {
+    display: flex;
+    margin-top: 60px; /* espacio barra superior */
+    height: calc(100vh - 60px);
+    width: 100%;
+}
+
+/* BARRA LATERAL */
+.side-bar {
+    width: 220px; /* ancho fijo */
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: fixed; /* pegada a la izquierda */
+    left: 0;
+    top: 60px;
+    bottom: 0;
+}
+
+.menu-item {
+    padding: 15px 20px;
+    margin: 5px 10px;
+    cursor: pointer;
+    color: #555;
+    border-radius: 8px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+/* Opción activa */
+.menu-item.active {
+    color: white;
+    background: #007bff; /* azul marco activo */
+}
+
+/* ÁREA DE CONTENIDO */
+.content-area {
+    margin-left: 220px; /* deja espacio para la barra lateral */
+    flex: 1;
+    padding: 30px;
+    background: #e9ecef;
+    overflow-y: auto;
+    min-height: calc(100vh - 60px); /* se asegura de ocupar toda la altura */
+}
+
+/* SECCIONES DE FACTURA, USUARIOS, ETC */
+.section {
+    display: none; /* se muestra solo la sección activa vía JS */
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* INPUTS Y BOTONES EN SECCIONES */
+.section input, .section select {
+    width: calc(100% - 24px);
+    padding: 10px;
+    margin: 10px 0;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.section button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.section button:hover {
+    background: #0056b3;
+}

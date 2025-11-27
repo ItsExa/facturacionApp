@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Empresa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="company-name">Nombre de la Empresa</div>
+    <div class="form-container">
+        <h2>Iniciar Sesión</h2>
+        <form onsubmit="redirectToDashboard(event)">
+            <input type="text" id="username" placeholder="Nombre de usuario" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Aún no tienes cuenta? <a href="{{ url_for('registro') }}">Regístrate</a></p>
+    </div>
+
+    <script>
+        function redirectToDashboard(event) {
+            event.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            if(user === "admin" && pass === "1") {
+                // redirige a la ruta Flask con parámetro de rol
+                window.location.href = "{{ url_for('dashboard') }}?role=admin";
+            } else if(user === "usuario" && pass === "2") {
+                window.location.href = "{{ url_for('dashboard') }}?role=usuario";
+            } else {
+                alert("Usuario o contraseña incorrectos");
+            }
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - Empresa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="company-name">Nombre de la Empresa</div>
+    <div class="form-container">
+        <h2>Registro</h2>
+        <form onsubmit="redirectToLogin(event)">
+            <input type="text" placeholder="Nombre completo" required>
+            <input type="email" placeholder="Correo electrónico" required>
+            <input type="password" placeholder="Contraseña" required>
+            <button type="submit">Registrarse</button>
+        </form>
+        <p>Si ya tienes cuenta, <a href="{{ url_for('login') }}">inicia sesión</a></p>
+    </div>
+
+    <script>
+        function redirectToLogin(event) {
+            event.preventDefault(); 
+            alert("Cuenta creada correctamente. Serás redirigido al login."); 
+            window.location.href = "/"; 
+        }
+    </script>
+</body>
+</html>
