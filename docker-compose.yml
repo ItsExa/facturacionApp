@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: facturacion_user
+      POSTGRES_PASSWORD: facturacion_pass
+      POSTGRES_DB: facturacion_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U facturacion_user -d facturacion_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://facturacion_user:facturacion_pass@db:5432/facturacion_db
+      SECRET_KEY: dev-secret-key-change-in-production
+      FLASK_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    command: sh -c "flask db upgrade && gunicorn --bind 0.0.0.0:5000 --workers 4 --reload run:app"
+
+volumes:
+  postgres_data:
