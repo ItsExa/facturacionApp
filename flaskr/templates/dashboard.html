@@ -30,8 +30,8 @@
                 <div class="menu-item" data-section="facturas-eliminar">Eliminar</div>
             </div>
 
-            <div class="menu-item" data-section="cobros">Cobros</div>
-            <div class="menu-item" data-section="cedulas">Cédulas</div>
+            <div class="menu-item" data-section="cobros">Productos</div>
+            <div class="menu-item" data-section="cedulas">Reportes</div>
 
             <!-- Nueva opción -->
             <div class="menu-item" data-section="perfil">Mi Cuenta</div>
@@ -105,8 +105,33 @@
                                                  </form>`;
                         break;
                     case "clientes-lista":
-                        contentArea.innerHTML = `<h2>Lista de Clientes</h2>
-                                                 <p>Tabla o lista simulada de clientes.</p>`;
+                        contentArea.innerHTML = `<h2 class="section-title">Lista de Clientes</h2>
+                                                 <div class="loading">Cargando datos...</div>`;
+                        fetch('/api/clientes')
+                            .then(res => res.json())
+                            .then(clientes => {
+                                let html = '<h2 class="section-title">Lista de Clientes</h2>';
+                                html += '<div class="table-container"><table class="data-table">';
+                                html += '<thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Ciudad</th><th>Fecha Alta</th></tr></thead>';
+                                html += '<tbody>';
+                                clientes.forEach(c => {
+                                    const fecha = new Date(c.creado_en).toLocaleDateString('es-ES');
+                                    html += `<tr>
+                                        <td>${c.id}</td>
+                                        <td>${c.nombre}</td>
+                                        <td>${c.email}</td>
+                                        <td>${c.telefono || 'N/A'}</td>
+                                        <td>${c.ciudad}</td>
+                                        <td>${fecha}</td>
+                                    </tr>`;
+                                });
+                                html += '</tbody></table></div>';
+                                contentArea.innerHTML = html;
+                            })
+                            .catch(err => {
+                                contentArea.innerHTML = '<h2 class="section-title">Error</h2><p>No se pudieron cargar los clientes</p>';
+                                console.error(err);
+                            });
                         break;
 
                     /* FACTURAS */
@@ -123,12 +148,64 @@
                                                  </form>`;
                         break;
                     case "facturas-lista":
-                        contentArea.innerHTML = `<h2>Lista de Facturas</h2>
-                                                 <p>Tabla simulada de facturas.</p>`;
+                        contentArea.innerHTML = `<h2 class="section-title">Lista de Facturas</h2>
+                                                 <div class="loading">Cargando facturas...</div>`;
+                        fetch('/api/facturas')
+                            .then(res => res.json())
+                            .then(facturas => {
+                                let html = '<h2 class="section-title">Lista de Facturas</h2>';
+                                html += '<div class="table-container"><table class="data-table">';
+                                html += '<thead><tr><th>Nº Factura</th><th>Cliente</th><th>Fecha</th><th>Subtotal</th><th>IVA</th><th>Total</th><th>Estado</th></tr></thead>';
+                                html += '<tbody>';
+                                facturas.forEach(f => {
+                                    const fecha = new Date(f.fecha).toLocaleDateString('es-ES');
+                                    const estadoBadge = `<span class="badge badge-${f.estado}">${f.estado}</span>`;
+                                    html += `<tr>
+                                        <td>${f.numero_factura}</td>
+                                        <td>${f.cliente}</td>
+                                        <td>${fecha}</td>
+                                        <td class="precio">$${f.subtotal.toLocaleString('es-AR')}</td>
+                                        <td class="precio">$${f.iva.toLocaleString('es-AR')}</td>
+                                        <td class="total">$${f.total.toLocaleString('es-AR')}</td>
+                                        <td>${estadoBadge}</td>
+                                    </tr>`;
+                                });
+                                html += '</tbody></table></div>';
+                                contentArea.innerHTML = html;
+                            })
+                            .catch(err => {
+                                contentArea.innerHTML = '<h2 class="section-title">Error</h2><p>No se pudieron cargar las facturas</p>';
+                                console.error(err);
+                            });
                         break;
                     case "facturas-historial":
-                        contentArea.innerHTML = `<h2>Historial de Facturas</h2>
-                                                 <p>Listado de facturas anteriores (solo vista).</p>`;
+                        contentArea.innerHTML = `<h2 class="section-title">Historial de Facturas</h2>
+                                                 <div class="loading">Cargando historial...</div>`;
+                        fetch('/api/facturas')
+                            .then(res => res.json())
+                            .then(facturas => {
+                                const facturasAnteriores = facturas.filter(f => f.estado === 'pagada');
+                                let html = '<h2 class="section-title">Historial de Facturas Pagadas</h2>';
+                                html += '<div class="table-container"><table class="data-table">';
+                                html += '<thead><tr><th>Nº Factura</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead>';
+                                html += '<tbody>';
+                                facturasAnteriores.forEach(f => {
+                                    const fecha = new Date(f.fecha).toLocaleDateString('es-ES');
+                                    html += `<tr>
+                                        <td>${f.numero_factura}</td>
+                                        <td>${f.cliente}</td>
+                                        <td>${fecha}</td>
+                                        <td class="total">$${f.total.toLocaleString('es-AR')}</td>
+                                        <td><span class="badge badge-pagada">pagada</span></td>
+                                    </tr>`;
+                                });
+                                html += '</tbody></table></div>';
+                                contentArea.innerHTML = html;
+                            })
+                            .catch(err => {
+                                contentArea.innerHTML = '<h2 class="section-title">Error</h2><p>No se pudo cargar el historial</p>';
+                                console.error(err);
+                            });
                         break;
                     case "facturas-eliminar":
                         contentArea.innerHTML = `<h2>Eliminar Factura</h2>
@@ -137,8 +214,32 @@
 
                     /* COBROS Y CÉDULAS */
                     case "cobros":
-                        contentArea.innerHTML = `<h2>Cobros</h2>
-                                                 <p>Gestión de cobros (solo admin).</p>`;
+                        contentArea.innerHTML = `<h2 class="section-title">Productos en Stock</h2>
+                                                 <div class="loading">Cargando productos...</div>`;
+                        fetch('/api/productos')
+                            .then(res => res.json())
+                            .then(productos => {
+                                let html = '<h2 class="section-title">Catálogo de Productos</h2>';
+                                html += '<div class="table-container"><table class="data-table">';
+                                html += '<thead><tr><th>ID</th><th>Producto</th><th>Categoría</th><th>Precio Unitario</th><th>Stock</th></tr></thead>';
+                                html += '<tbody>';
+                                productos.forEach(p => {
+                                    const stockClass = p.stock < 10 ? 'style="color: #dc3545; font-weight: bold;"' : '';
+                                    html += `<tr>
+                                        <td>${p.id}</td>
+                                        <td><strong>${p.nombre}</strong><br><small style="color: #6c757d;">${p.descripcion}</small></td>
+                                        <td>${p.categoria}</td>
+                                        <td class="precio">$${p.precio.toLocaleString('es-AR')}</td>
+                                        <td ${stockClass}>${p.stock} unidades</td>
+                                    </tr>`;
+                                });
+                                html += '</tbody></table></div>';
+                                contentArea.innerHTML = html;
+                            })
+                            .catch(err => {
+                                contentArea.innerHTML = '<h2 class="section-title">Error</h2><p>No se pudieron cargar los productos</p>';
+                                console.error(err);
+                            });
                         break;
                     case "cedulas":
                         contentArea.innerHTML = `<h2>Cédulas</h2>
